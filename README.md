@@ -1,2 +1,4 @@
 # FMLLM-BILSTM-NER
-The example source files provided by this method are located in the src directory, among which the files usable for LLaMA-Factory need to be configured within LLaMAFactory: https://github.com/hiyouga/LLaMAFactory before use.
+
+The example source files provided by our framework are located in the src directory, among which the files usable for LLaMA-Factory need to be configured within LLaMAFactory: https://github.com/hiyouga/LLaMAFactory before use.
+
