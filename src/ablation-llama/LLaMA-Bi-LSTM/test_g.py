@@ -81,7 +81,7 @@ def preprocess_function(examples, label2id, max_length, language='english'):
                     token_text = prompt[start:end].strip()
                     token_text_len = len(token_text)
                     if token_text in words[id]:
-                        if token_text == words[id]: # 完全匹配
+                        if token_text == words[id]: 
                             word_ids.append(id)
                             
                             id += 1
@@ -184,7 +184,7 @@ def evaluate_model(model, val_dataloader, device):
             
             for i in range(len(predictions)):
                 
-                mask_i = b_mask[i].bool().cpu().numpy() #[seqlen]
+                mask_i = b_mask[i].bool().cpu().numpy() 
 
                 cur_label = b_labels[i].cpu().tolist()
                 true_labels_valid = [id for id in cur_label if id != -100]
@@ -220,7 +220,7 @@ def prepare_dataset(sentences, labels, label2id, max_length, language='english')
     for sent, labs in zip(sentences, labels):
        
         while len(sent) > 0:
-            if sent[0] == "\"" or sent[0] == "(" or sent[0] == "-" or sent[0] == "," or sent[0] == ")" or sent[0] == "/" or sent[0] == "." or sent[0] == "'" or sent[0] == ":": # 去掉开头的特殊符号 防止干扰prompt的tokenize
+            if sent[0] == "\"" or sent[0] == "(" or sent[0] == "-" or sent[0] == "," or sent[0] == ")" or sent[0] == "/" or sent[0] == "." or sent[0] == "'" or sent[0] == ":": 
                 sent = sent[1:]
                 labs = labs[1:]
             else:
@@ -320,8 +320,8 @@ def get_lora_config(inference_mode=False):
     return lora_config
 
 if __name__ == "__main__":
-    # 配置参数
-    tokenizer_path = "/hf_models/Llama-3.2-1B-Instruct-unsloth-bnb-4bit"  # 使用4bit量化版本
+    
+    tokenizer_path = "/hf_models/Llama-3.2-1B-Instruct-unsloth-bnb-4bit"  
     tags_csv_path = "/genia/label.csv"
     test_data_path = "/genia/processed_test.txt"
     best_model_path = "/LLaMA-Bi-LSTM/best_weights.pt"

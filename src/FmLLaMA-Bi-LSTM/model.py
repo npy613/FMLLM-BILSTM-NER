@@ -3,14 +3,11 @@ import torch.nn as nn
 from transformers import AutoTokenizer
 from modeling_llama import LlamaForCausalLM
 
-
-# 自定义模型类，将LLM适配为序列标注任务
 class LlamaForNER(nn.Module):
     def __init__(self, model_path, hidden_dim=128, num_labels=10, max_length=512):
         super(LlamaForNER, self).__init__()
         self.model = LlamaForCausalLM.from_pretrained(
             model_path,
-            # device_map="auto",
             device_map="cuda",
             dtype=torch.float32
         )
@@ -31,7 +28,6 @@ class LlamaForNER(nn.Module):
         )
         self.dropout = nn.Dropout(0.3)
         self.hidden2tag = nn.Linear(hidden_dim * 2, num_labels)
-        # self.crf = CRF(num_labels, batch_first=True)
         
     
     def forward(self, input_ids, attention_mask, labels=None):
@@ -41,18 +37,14 @@ class LlamaForNER(nn.Module):
             output_hidden_states=True
         )
         
-        sequence_output = outputs.hidden_states[-1]   # [batch, seq_len, self.model.config.hidden_size]
-        lstm_out, _ = self.lstm(sequence_output)     # [batch, seq_len, 2*hidden]
+        sequence_output = outputs.hidden_states[-1]  
+        lstm_out, _ = self.lstm(sequence_output)     
         lstm_out = self.dropout(lstm_out)
-        ner_logits = self.hidden2tag(lstm_out)        # [batch, seq_len, num_labels]
-
-        # 基础mask来自attention_mask
-        # base_mask = attention_mask.bool() # 左padding部分  （bos、text为1）
+        ner_logits = self.hidden2tag(lstm_out)        
     
         
         if labels is not None:
-            loss_fct = nn.CrossEntropyLoss(ignore_index=-100, label_smoothing=0.1) # 忽略labels标签为-100的部分：padding部分和指令部分
-            # 只计算非padding部分的loss
+            loss_fct = nn.CrossEntropyLoss(ignore_index=-100, label_smoothing=0.1) 
             active_loss = attention_mask.view(-1) == 1
             active_logits = ner_logits.view(-1, self.num_labels)[active_loss]
             active_labels = labels.view(-1)[active_loss]
@@ -62,7 +54,6 @@ class LlamaForNER(nn.Module):
         return ner_logits
     
     def forward_with_attentions(self, input_ids, attention_mask):
-        """返回NER logits和注意力权重，用于可视化"""
         outputs = self.model(
             input_ids=input_ids,
             attention_mask=attention_mask,
@@ -75,11 +66,10 @@ class LlamaForNER(nn.Module):
         lstm_out = self.dropout(lstm_out)
         ner_logits = self.hidden2tag(lstm_out)
 
-        # outputs.attentions 是 tuple，每层一个 [batch, num_heads, seq_len, seq_len]
         return ner_logits, outputs.attentions
 
-    def predict(self, input_ids, attention_mask): # no use
-        """预测方法，返回最可能的标签序列"""
+    def predict(self, input_ids, attention_mask): 
+      
         with torch.no_grad():
             pred = self.forward(input_ids, attention_mask)
             return pred

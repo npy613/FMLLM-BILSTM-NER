@@ -277,9 +277,9 @@ if __name__ == "__main__":
         json_path2,
         output_pdf="attention_comparison.pdf",
         crop_pad=True,
-        sub_start=None,   # 可设置为实体区域起点
-        sub_end=None,     # 可设置为实体区域终点
+        sub_start=None,   
+        sub_end=None,     
         diff_percentile_clip=99,
-        save_individual=True  # 同时保存三张独立 PDF
+        save_individual=True  
     )
 

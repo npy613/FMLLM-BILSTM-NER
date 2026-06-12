@@ -21,7 +21,7 @@ import os
 import time
 
 def replace_numbers_with_placeholder(text, placeholder="NUM"):
-    if re.search(r'\d', text):  # 检查是否包含任何数字
+    if re.search(r'\d', text):  
         return placeholder
     else:
         return text
@@ -188,7 +188,7 @@ def evaluate_model(model, val_dataloader, device, measure_time=False, warmup_sam
             
             for i in range(len(predictions)):
                 
-                mask_i = b_mask[i].bool().cpu().numpy() #[seqlen]
+                mask_i = b_mask[i].bool().cpu().numpy() 
                 
                 cur_label = b_labels[i].cpu().tolist()
                 true_labels_valid = [id for id in cur_label if id != -100]
@@ -214,7 +214,7 @@ def evaluate_model(model, val_dataloader, device, measure_time=False, warmup_sam
                 all_true_labels.extend(true_labels_valid)
                 all_predictions.extend(pred_labels_list)
             
-            # 更新已处理的样本数
+            
             processed_samples += len(predictions)
     
     avg_val_loss = total_val_loss / len(val_dataloader)
@@ -247,7 +247,7 @@ def prepare_dataset(sentences, labels, label2id, max_length, language='english')
     
     for sent, labs in zip(sentences, labels):
         while len(sent) > 0:
-            if sent[0] == "\"" or sent[0] == "(" or sent[0] == "-" or sent[0] == "," or sent[0] == ")" or sent[0] == "/" or sent[0] == "." or sent[0] == "'" or sent[0] == ":": # 去掉开头的特殊符号 防止干扰prompt的tokenize
+            if sent[0] == "\"" or sent[0] == "(" or sent[0] == "-" or sent[0] == "," or sent[0] == ")" or sent[0] == "/" or sent[0] == "." or sent[0] == "'" or sent[0] == ":": 
                 sent = sent[1:]
                 labs = labs[1:]
             else:
@@ -321,7 +321,6 @@ def load_model(model, load_path, device):
     else:
         print("警告: 检查点中没有找到NER分类器状态")
 
-    # 统计模型参数数量
     total_params = sum(p.numel() for p in model.parameters())
     print(f"模型总参数量: {total_params:,}")
     
@@ -344,12 +343,9 @@ def get_lora_config(inference_mode=False):
 
 
 if __name__ == "__main__":
-    # 配置参数
-    tokenizer_path = "/hf_models/Llama-3.2-1B-Instruct-unsloth-bnb-4bit"  # 使用4bit量化版本
+    tokenizer_path = "/hf_models/Llama-3.2-1B-Instruct-unsloth-bnb-4bit"  
     tags_csv_path = "/genia/label.csv"
-
     test_data_path = "/genia/test.txt"
-    
     best_model_path = "/FmLLaMA-Bi-LSTM/best_weights.pt"
 
     language='english'
@@ -392,7 +388,7 @@ if __name__ == "__main__":
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
         torch.cuda.reset_peak_memory_stats(device)
-        initial_memory = torch.cuda.memory_allocated(device) / 1024**2  # MB
+        initial_memory = torch.cuda.memory_allocated(device) / 1024**2  
         print(f"初始显存占用: {initial_memory:.2f} MB")
 
     
@@ -413,7 +409,7 @@ if __name__ == "__main__":
 
    
     if torch.cuda.is_available():
-        model_memory = torch.cuda.memory_allocated(device) / 1024**2  # MB
+        model_memory = torch.cuda.memory_allocated(device) / 1024**2  
         print(f"模型加载后显存占用: {model_memory:.2f} MB")
         print(f"模型占用显存: {model_memory - initial_memory:.2f} MB")
  
@@ -426,8 +422,8 @@ if __name__ == "__main__":
 
    
     if torch.cuda.is_available():
-        peak_memory = torch.cuda.max_memory_allocated(device) / 1024**2  # MB
-        current_memory = torch.cuda.memory_allocated(device) / 1024**2  # MB
+        peak_memory = torch.cuda.max_memory_allocated(device) / 1024**2  
+        current_memory = torch.cuda.memory_allocated(device) / 1024**2  
         print(f"\n=== 显存使用统计 ===")
         print(f"当前显存占用: {current_memory:.2f} MB")
         print(f"峰值显存占用: {peak_memory:.2f} MB")

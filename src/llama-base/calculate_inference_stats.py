@@ -19,22 +19,18 @@ def parse_log_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
-        # 提取平均每个样本推理时间 (排除warm-up)
         match = re.search(r'平均每个样本推理时间 \(排除warm-up\): ([\d.]+) ms', content)
         if match:
             metrics['avg_time'] = float(match.group(1))
 
-        # 提取P50推理时延
         match = re.search(r'P50推理时延: ([\d.]+) ms', content)
         if match:
             metrics['p50'] = float(match.group(1))
 
-        # 提取P95推理时延
         match = re.search(r'P95推理时延: ([\d.]+) ms', content)
         if match:
             metrics['p95'] = float(match.group(1))
 
-        # 提取P99推理时延
         match = re.search(r'P99推理时延: ([\d.]+) ms', content)
         if match:
             metrics['p99'] = float(match.group(1))
@@ -43,11 +39,11 @@ def parse_log_file(file_path):
 
 
 def main():
-    # 定义日志文件路径
+   
     base_dir = Path(__file__).parent
     log_files = [base_dir / f"test_with_m&t_log{i}.txt" for i in range(1, 6)]
 
-    # 存储所有文件的指标
+   
     all_metrics = {
         'avg_time': [],
         'p50': [],
@@ -55,8 +51,6 @@ def main():
         'p99': []
     }
 
-    # 解析每个日志文件
-    print("正在解析日志文件...")
     for log_file in log_files:
         if not log_file.exists():
             print(f"警告: 文件不存在 - {log_file}")
@@ -69,7 +63,6 @@ def main():
             if key in metrics:
                 all_metrics[key].append(metrics[key])
 
-    # 计算统计信息
     print("\n" + "="*60)
     print("推理时间指标统计结果")
     print("="*60)
@@ -81,9 +74,8 @@ def main():
 
         values_array = np.array(values)
         mean_val = np.mean(values_array)
-        std_val = np.std(values_array, ddof=1)  # 使用样本标准差
+        std_val = np.std(values_array, ddof=1) 
 
-        # 格式化输出
         metric_display_names = {
             'avg_time': '平均每个样本推理时间 (排除warm-up)',
             'p50': 'P50推理时延',

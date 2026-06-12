@@ -63,9 +63,8 @@ def main():
 
         values_array = np.array(values)
         mean_val = np.mean(values_array)
-        std_val = np.std(values_array, ddof=1)  # 使用样本标准差
+        std_val = np.std(values_array, ddof=1) 
 
-        # 格式化输出
         metric_display_names = {
             'avg_time': '平均每个样本推理时间 (排除warm-up)',
             'p50': 'P50推理时延',

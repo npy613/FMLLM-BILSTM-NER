@@ -199,7 +199,7 @@ def prepare_dataset(sentences, labels, label2id, max_length, language='english')
     
     for sent, labs in zip(sentences, labels):
         while len(sent) > 0:
-            if sent[0] == "\"" or sent[0] == "(" or sent[0] == "-" or sent[0] == "," or sent[0] == ")" or sent[0] == "/" or sent[0] == "." or sent[0] == "'" or sent[0] == ":": # 去掉开头的特殊符号 防止干扰prompt的tokenize
+            if sent[0] == "\"" or sent[0] == "(" or sent[0] == "-" or sent[0] == "," or sent[0] == ")" or sent[0] == "/" or sent[0] == "." or sent[0] == "'" or sent[0] == ":": 
                 sent = sent[1:]
                 labs = labs[1:]
             else:
@@ -279,7 +279,7 @@ def get_lora_config(inference_mode=False):
 
 if __name__ == "__main__":
     
-    tokenizer_path = "/hf_models/Llama-3.2-1B-Instruct-unsloth-bnb-4bit"  # 使用4bit量化版本
+    tokenizer_path = "/hf_models/Llama-3.2-1B-Instruct-unsloth-bnb-4bit"  
     tags_csv_path = "/label.csv"
     test_data_path = "/genia/test.txt"   
     best_model_path = "/best_weights.pt"

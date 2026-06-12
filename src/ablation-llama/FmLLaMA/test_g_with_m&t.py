@@ -175,7 +175,7 @@ def evaluate_model(model, val_dataloader, device, measure_time=False, warmup_sam
 
             
             for i in range(len(predictions)):               
-                mask_i = b_mask[i].bool().cpu().numpy() #[seqlen]           
+                mask_i = b_mask[i].bool().cpu().numpy()           
                 cur_label = b_labels[i].cpu().tolist()
                 true_labels_valid = [id for id in cur_label if id != -100]
                 word_ids = [id for id in b_word_ids[i].cpu().tolist() if id != -100]
@@ -226,7 +226,7 @@ def prepare_dataset(sentences, labels, label2id, max_length, language='english')
     
     for sent, labs in zip(sentences, labels):
         while len(sent) > 0:
-            if sent[0] == "\"" or sent[0] == "(" or sent[0] == "-" or sent[0] == "," or sent[0] == ")" or sent[0] == "/" or sent[0] == "." or sent[0] == "'" or sent[0] == ":": # 去掉开头的特殊符号 防止干扰prompt的tokenize
+            if sent[0] == "\"" or sent[0] == "(" or sent[0] == "-" or sent[0] == "," or sent[0] == ")" or sent[0] == "/" or sent[0] == "." or sent[0] == "'" or sent[0] == ":": 
                 sent = sent[1:]
                 labs = labs[1:]
             else:
@@ -254,11 +254,10 @@ def prepare_dataset(sentences, labels, label2id, max_length, language='english')
     return tokenized_dataset
 
 def save_model(model, save_path):
-    # 保存LoRA适配器
+    
     lora_save_path = save_path.replace('.pt', '_lora')
     model.model.save_pretrained(lora_save_path)
     
-    # 保存NER分类器和其他配置
     torch.save({
         'ner_classifier_state_dict': model.ner_classifier.state_dict(),
         'model_config': model.model.config,
@@ -307,7 +306,7 @@ def get_lora_config(inference_mode=False):
 
 
 if __name__ == "__main__":
-    tokenizer_path = "/hf_models/Llama-3.2-1B-Instruct-unsloth-bnb-4bit"  # 使用4bit量化版本
+    tokenizer_path = "/hf_models/Llama-3.2-1B-Instruct-unsloth-bnb-4bit"  
     tags_csv_path = "/label.csv"
     test_data_path = "/genia/test.txt"   
     best_model_path = "/best_weights.pt"
@@ -365,7 +364,7 @@ if __name__ == "__main__":
     fresh_model = fresh_model.to(device)
 
     if torch.cuda.is_available():
-        model_memory = torch.cuda.memory_allocated(device) / 1024**2  # MB
+        model_memory = torch.cuda.memory_allocated(device) / 1024**2  
         print(f"模型加载后显存占用: {model_memory:.2f} MB")
         print(f"模型占用显存: {model_memory - initial_memory:.2f} MB")
 
@@ -377,8 +376,8 @@ if __name__ == "__main__":
         avg_inference_time = None
 
     if torch.cuda.is_available():
-        peak_memory = torch.cuda.max_memory_allocated(device) / 1024**2  # MB
-        current_memory = torch.cuda.memory_allocated(device) / 1024**2  # MB
+        peak_memory = torch.cuda.max_memory_allocated(device) / 1024**2  
+        current_memory = torch.cuda.memory_allocated(device) / 1024**2  
         print(f"\n=== 显存使用统计 ===")
         print(f"当前显存占用: {current_memory:.2f} MB")
         print(f"峰值显存占用: {peak_memory:.2f} MB")
