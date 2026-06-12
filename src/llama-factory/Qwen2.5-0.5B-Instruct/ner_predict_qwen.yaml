@@ -1,0 +1,24 @@
+### model
+model_name_or_path: /hf_models/Qwen2.5-0.5B-Instruct
+adapter_name_or_path: saves/Qwen2.5-0.5B-Instruct/lora/ner-sft
+finetuning_type: lora
+trust_remote_code: false
+
+### method
+stage: sft
+do_train: false
+do_eval: false
+do_predict: true
+
+### dataset
+eval_dataset: genia_llmf_test
+dataset_dir: /LLaMA-Factory/data
+template: qwen
+cutoff_len: 512
+
+per_device_eval_batch_size: 4
+
+### output
+output_dir: saves/Qwen2.5-0.5B-Instruct/lora/ner-sft/predict
+overwrite_output_dir: true
+predict_with_generate: true   # ❗ 必须开启

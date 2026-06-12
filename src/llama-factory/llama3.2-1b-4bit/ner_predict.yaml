@@ -1,0 +1,24 @@
+### model
+model_name_or_path: /hf_models/Llama-3.2-1B-Instruct-unsloth-bnb-4bit
+adapter_name_or_path: saves/llama3-1b-4bit/lora/ner-sft
+finetuning_type: lora
+trust_remote_code: false
+
+### method
+stage: sft
+do_train: false
+do_eval: false
+do_predict: true
+
+### dataset
+eval_dataset: conll2003_llmf_test
+dataset_dir: /LLaMA-Factory/data
+template: llama3
+cutoff_len: 512
+
+per_device_eval_batch_size: 4
+
+### output
+output_dir: saves/llama3-1b-4bit/lora/ner-sft/predict
+overwrite_output_dir: true
+predict_with_generate: true   # ❗ 必须开启
